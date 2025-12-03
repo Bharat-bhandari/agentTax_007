@@ -2,6 +2,8 @@ from langgraph.graph import StateGraph, START, END
 from src.states.tax_state import TaxState
 from src.nodes.supervisor import SupervisorNode
 
+from langgraph.checkpoint.memory import MemorySaver
+
 class GraphBuilder:
     def __init__(self,llm):
         self.llm=llm
@@ -22,7 +24,9 @@ class GraphBuilder:
         self.graph.add_edge(START,"supervisor_node")
         self.graph.add_edge("supervisor_node",END)
 
-        return self.graph.compile()
+        checkpointer = MemorySaver()
+
+        return self.graph.compile(checkpointer=checkpointer)
     
     def setup_graph(self):
         return self.build_graph()
